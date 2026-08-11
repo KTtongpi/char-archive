@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>등장인물 소개</title>
+<style>
+:root{
+  --bg:#101114;--panel:#181a20;--line:#30343d;--text:#f4f4f5;
+  --muted:#a5a8b0;--accent:#c9a7ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Arial,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text)
+}
+.page{width:min(1180px,calc(100% - 32px));margin:auto;padding-bottom:70px}
+header{text-align:center;padding:60px 0 28px}
+header h1{margin:0;font-size:clamp(36px,7vw,64px)}
+header p{color:var(--muted)}
+.toolbar{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin:24px 0
+}
+.filters{display:flex;gap:8px}
+.filter-btn{
+  border:1px solid var(--line);background:#20232b;color:var(--muted);
+  padding:10px 16px;border-radius:999px;cursor:pointer
+}
+.filter-btn.active,.filter-btn:hover{color:#fff;border-color:var(--accent);background:#2a2238}
+.count{color:var(--muted);font-size:13px}
+.grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px
+}
+.card{
+  border:1px solid var(--line);background:var(--panel);color:inherit;border-radius:18px;
+  overflow:hidden;padding:0;text-align:left;cursor:pointer;transition:.2s
+}
+.card:hover{transform:translateY(-5px)}
+.image-wrap{aspect-ratio:2/3;background:#272a31;position:relative;overflow:hidden}
+.character-image{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.badge{
+  position:absolute;top:12px;left:12px;background:rgba(0,0,0,.65);
+  padding:6px 10px;border-radius:999px;font-size:12px
+}
+.card-body{padding:16px}
+.card-name{margin:0 0 6px;font-size:22px}
+.card-summary{margin:0;color:var(--muted);font-size:13px}
+
+.modal{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;
+  align-items:center;justify-content:center;padding:20px
+}
+.modal.open{display:flex}
+.modal-panel{
+  width:min(900px,100%);max-height:92vh;overflow:auto;background:#15171c;
+  border:1px solid #373b46;border-radius:22px;position:relative
+}
+.close-btn{
+  position:absolute;right:14px;top:14px;width:40px;height:40px;border-radius:50%;
+  border:1px solid #414651;background:#1f2229;color:#fff;font-size:20px;cursor:pointer;z-index:2
+}
+.modal-content{display:grid;grid-template-columns:38% 1fr;min-height:560px}
+.modal-image-wrap{background:#24272e}
+.modal-image{width:100%;height:100%;min-height:560px;object-fit:cover;object-position:center top}
+.modal-info{padding:44px 40px}
+.modal-category{color:var(--accent);font-size:12px;margin-bottom:8px}
+.modal-name{margin:0 0 28px;font-size:38px}
+.profile-list{border-top:1px solid var(--line)}
+.profile-row{
+  display:grid;grid-template-columns:90px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)
+}
+.profile-label{color:var(--muted);font-weight:bold;font-size:13px}
+.profile-value{line-height:1.6;white-space:pre-line}
+
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .modal-content{grid-template-columns:1fr}
+  .modal-image-wrap{aspect-ratio:4/5}
+  .modal-image{min-height:0}
+  .modal-info{padding:28px 22px}
+}
+@media(max-width:420px){.grid{grid-template-columns:1fr}}
+</style>
+<script type="text/javascript" nonce="4b391be2958a469bb5af6b6e667" src="//local.adguard.org?ts=1786426651920&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_0000000084e082099b30377cec2a0789%26fn%3Dcharacter_archive_12.html%26cd%3Dattachment%26ts%3D496230%26p%3Dfs%26cid%3D1%26sig%3D60713819183c5bf4ccc25735c21586bf641bf511649799149df490c2df5915da%26v%3D0&amp;app=chrome.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-wrtc&amp;st-push&amp;st-flash&amp;st-dnt"></script><script type="text/javascript" nonce="4b391be2958a469bb5af6b6e667" src="//local.adguard.org?ts=1786426651920&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script></head>
+<body>
+<main class="page">
+<header>
+  <h1>CHARACTER ARCHIVE</h1>
+  <p>등장인물 소개</p>
+</header>
+
+<section class="toolbar">
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">전체</button>
+    <button class="filter-btn" data-filter="main">주역</button>
+    <button class="filter-btn" data-filter="support">조연</button>
+  </div>
+  <div class="count" id="characterCount"></div>
+</section>
+
+<section class="grid" id="characterGrid"></section>
+</main>
+
+<div class="modal" id="modal">
+  <div class="modal-panel">
+    <button class="close-btn" id="closeModal">×</button>
+    <div class="modal-content">
+      <div class="modal-image-wrap">
+        <img class="modal-image" id="modalImage" alt="">
+      </div>
+      <div class="modal-info">
+        <div class="modal-category" id="modalCategory"></div>
+        <h2 class="modal-name" id="modalName"></h2>
+        <div class="profile-list">
+          <div class="profile-row"><div class="profile-label">나이</div><div class="profile-value" id="modalAge"></div></div>
+          <div class="profile-row"><div class="profile-label">신체</div><div class="profile-value" id="modalBody"></div></div>
+          <div class="profile-row"><div class="profile-label">취미</div><div class="profile-value" id="modalHobby"></div></div>
+          <div class="profile-row"><div class="profile-label">선호</div><div class="profile-value" id="modalLikes"></div></div>
+          <div class="profile-row"><div class="profile-label">특이사항</div><div class="profile-value" id="modalNotes"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const characters = [
+  {name:"정수아",category:"main",image:"images/01.webp",age:"21",body:"169cm",hobby:"인스타, 틱톡",likes:"엽떡, 마라탕",notes:"코디과",summary:"일진팸 리더"},
+  {name:"한아린",category:"main",image:"images/02.webp",age:"21",body:"165cm",hobby:"인스타, 유튜브, 담배",likes:"매운족발, 레모네이드",notes:"코디과, 불감증 보유",summary:"일진팸의 귀차니스트"},
+  {name:"하유리",category:"main",image:"images/03.webp",age:"21",body:"160cm",hobby:"요리",likes:"밀크초콜릿, 로맨스물",notes:"심리학과, 중3 친부 사망",summary:"당신의 소꿉친구"},
+  {name:"유시아",category:"main",image:"images/04.webp",age:"21",body:"162cm",hobby:"만화, 애니 감상",likes:"군것질, 길거리 음식",notes:"인서울 약학과, 언니: 유채하",summary:"부잣집 아가씨"},
+  {name:"천유아",category:"support",image:"images/05.webp",age:"21",body:"155cm",hobby:"커뮤니티",likes:"주식차트 빨간불",notes:"'고졸, 여자몸매 갤러리' 파딱",summary:"고등학교 시절 찐따녀"},
+  {name:"윤설화",category:"support",image:"images/06.webp",age:"21",body:"169cm",hobby:"운동, 성인지 감상",likes:"채하율제 디저트",notes:"범죄심리학과, 상당한 망상가",summary:"고등학교 시절 선도부장"},
+  {name:"채하율",category:"support",image:"images/07.webp",age:"21",body:"159cm",hobby:"디저트 굽기, 보드게임",likes:"디저트",notes:"사회복지학과, 학생회 소속 인기인",summary:"고등학교 시절 학생회장"},
+  {name:"강지우",category:"support",image:"images/08.webp",age:"21",body:"170cm",hobby:"귀여운 것 감상",likes:"인형 수집",notes:"고졸, 술집 알바 중",summary:"털털한 여사친"},
+  {name:"유채하",category:"support",image:"images/09.webp",age:"25",body:"169cm",hobby:"클럽, 술",likes:"와인, 명품",notes:"애정결핍",summary:"자유분방한 시아네 언니"},
+  {name:"신지윤",category:"support",image:"images/10.webp",age:"43",body:"163cm",hobby:"수다떨기",likes:"맥주",notes:"욕구불만",summary:"교활한 수아네 엄마"},
+  {name:"이연서",category:"support",image:"images/11.webp",age:"41",body:"166cm",hobby:"집안일",likes:"한식",notes:"미망인",summary:"다정다감한 유리네 엄마"},
+  {name:"한서린",category:"support",image:"images/12.webp",age:"20",body:"162cm",hobby:"화장품 수집",likes:"마카롱, 아이스 아메리카노",notes:"다감증 보유",summary:"까칠한 아린이네 동생"}
+];
+
+const categoryLabel={main:"주역",support:"조연"};
+const grid=document.getElementById("characterGrid");
+const count=document.getElementById("characterCount");
+const modal=document.getElementById("modal");
+let currentFilter="all";
+
+function placeholder(name){
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1200">
+  <rect width="100%" height="100%" fill="#272a31"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+  fill="#a5a8b0" font-size="54" font-family="Arial">${name}</text></svg>`;
+  return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+}
+
+function renderCharacters(){
+  const list=currentFilter==="all"?characters:characters.filter(c=>c.category===currentFilter);
+  grid.innerHTML="";
+  list.forEach(c=>{
+    const card=document.createElement("button");
+    card.className="card";
+    card.innerHTML=`
+      <div class="image-wrap">
+        <img class="character-image" src="${c.image}" alt="${c.name}">
+        <span class="badge">${categoryLabel[c.category]}</span>
+      </div>
+      <div class="card-body">
+        <h2 class="card-name">${c.name}</h2>
+        <p class="card-summary">${c.summary}</p>
+      </div>`;
+    const img=card.querySelector("img");
+    img.onerror=()=>{img.onerror=null;img.src=placeholder(c.name);};
+    card.onclick=()=>openModal(c);
+    grid.appendChild(card);
+  });
+  count.textContent=`${list.length}명`;
+}
+
+function openModal(c){
+  const img=document.getElementById("modalImage");
+  img.src=c.image; img.alt=c.name;
+  img.onerror=()=>{img.onerror=null;img.src=placeholder(c.name);};
+  document.getElementById("modalCategory").textContent=categoryLabel[c.category];
+  document.getElementById("modalName").textContent=c.name;
+  document.getElementById("modalAge").textContent=c.age;
+  document.getElementById("modalBody").textContent=c.body;
+  document.getElementById("modalHobby").textContent=c.hobby;
+  document.getElementById("modalLikes").textContent=c.likes;
+  document.getElementById("modalNotes").textContent=c.notes;
+  modal.classList.add("open");
+  document.body.style.overflow="hidden";
+}
+
+function closeModal(){
+  modal.classList.remove("open");
+  document.body.style.overflow="";
+}
+
+document.querySelectorAll(".filter-btn").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter=btn.dataset.filter;
+    renderCharacters();
+  };
+});
+
+document.getElementById("closeModal").onclick=closeModal;
+modal.onclick=e=>{if(e.target===modal)closeModal();};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+renderCharacters();
+</script>
+</body>
+</html>
